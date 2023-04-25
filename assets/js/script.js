@@ -78,19 +78,32 @@ function displayQuestion(index) {
   listOfChoices.appendChild(choice2);
   listOfChoices.appendChild(choice3);
   listOfChoices.appendChild(choice4);
-}
 
-main.addEventListener('click', function(event) {
-  var parentElement = event.target.parentElement;
-  if (parentElement.classList.contains("choices")) {
-    checkCorrectAnswer();
-  }
-});
+  var buttons = main.querySelectorAll(".choices > button");
+  buttons.forEach((button) => {
+    var chosen = button.textContent;
+    var correct = content.answers[index];
+    button.addEventListener('click', () => {
+      checkCorrectAnswer(chosen, correct);
+    })});
+};
+
+displayQuestion(0);
 
 // function checkCorrectAnswer 
     // if clicked === right answer return true
     // default return false
-
+function checkCorrectAnswer(userAnswer, correctAnswer) {
+  var message = document.createElement("p");
+  if (userAnswer === correctAnswer) {
+    message.textContent = "Correct!";
+    message.classList.add("result");
+  } else {
+    message.textContent = "Incorrect!";
+    message.classList.add("result");
+  }
+  main.appendChild(message);
+}
 
 // function endGame
     // displays end screen
