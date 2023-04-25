@@ -100,7 +100,12 @@ function displayQuestion(index) {
     var chosen = button.textContent;
     var correct = content.answers[index];
     button.addEventListener('click', () => {
-      checkCorrectAnswer(chosen, correct);
+      var result = checkCorrectAnswer(chosen, correct);
+      if (result === 1) {
+        button.classList.add('correct');
+      } else {
+        button.classList.add('incorrect');
+      }
       return;
     })});
 };
@@ -109,31 +114,21 @@ function displayQuestion(index) {
     // if clicked === right answer return true
     // default return false
 function checkCorrectAnswer(userAnswer, correctAnswer) {
-  if (main.children[2] !== undefined) {
-    main.removeChild(main.children[2]);
-  }
-  var message = document.createElement("p");
   if (userAnswer === correctAnswer) {
-    message.textContent = "Correct!";
-    message.classList.add("result");
-    moveOn();
+    setTimeout(moveOn, 1000);
+    return 1;
   } else {
-    message.textContent = "Incorrect!";
-    message.classList.add("result");
     count -= 15;
     timeDisplay.textContent = count;
     if (count < 0) {
       count = 0;
       timeDisplay.textContent = count;
-      endGame();
-      return;
+      setTimeout(endGame, 1000);
+      return 0;
     }
-    moveOn();
+    setTimeout(moveOn, 1000);
+    return 0;
   }
-  main.appendChild(message);
-  setTimeout(() => {
-    main.removeChild(message);
-  }, 3000);
 }
 
 function moveOn() {
@@ -149,7 +144,7 @@ function endGame() {
   main.innerHTML = '';
 
   var message = document.createElement("h3");
-  message.textContent = "Thanks for taking the quiz!";
+  message.textContent = "Thanks for playing!";
 
   var score = document.createElement("p");
   count = timeDisplay.textContent;
@@ -169,12 +164,55 @@ function endGame() {
   main.appendChild(message);
   main.appendChild(score);
   main.appendChild(form);
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    console.log(players);
+    savePlayer(textbox.value, count);
+    displayScores();
+  });
 }
 
 // function savePlayer
     // create object then save object to array
     // use local storage to update array
+function savePlayer(name, score) {
+  var player = {
+    name: name,
+    score: score
+  }
+
+  players.push(player);
+  players.sort(function(a, b) {
+    return b.score - a.score;
+  });
+  localStorage.setItem("players", JSON.stringify(players));
+}
 
 // function displayScores
+function displayScores() {
+  main.innerHTML = '';
+
+  var message = document.createElement("h3");
+  message.textContent = "High Scores";
+
+  var list = document.createElement("ol");
+
+  var highscores = JSON.parse(localStorage.getItem("players"));
+
+  for (let i = 0; i < highscores.length; i++) {
+    var entry = document.createElement("li");
+    entry.textContent = `${highscores[i].name} - ${highscores[i].score}`;
+    list.appendChild(entry);
+  }
+
+  main.appendChild(message);
+  main.appendChild(list);
+}
+
+function init() {
+  players = JSON.parse(localStorage.getItem("players"));
+}
 
 start.addEventListener('click', startGame);
+init();
