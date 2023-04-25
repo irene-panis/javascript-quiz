@@ -29,15 +29,24 @@ var content = {
 // array of player highscores
     // players should be objects w/ name and score properties
 var players = [];
+var count = 60;
 
 var timeDisplay = document.getElementById("count");
 var main = document.querySelector("main");
+var start = document.querySelector("#start-btn");
+
+var questionNumber;
 
 // function startGame
-    
+function startGame() {
+  startTimer();
+
+  questionNumber = 0;
+  displayQuestion(questionNumber);
+}
+
 // function startTimer
 function startTimer() {
-  var count = 60;
 
   var timerInterval = setInterval(function() {
     timeDisplay.textContent = count;
@@ -55,6 +64,7 @@ function startTimer() {
     // if isCorrectAnswer append "Correct!" then return
     // if !isCorrectAnswer -15 timer append "Wrong!" then return
 function displayQuestion(index) {
+  console.log(index);
   main.innerHTML = '';
 
   var question = document.createElement("h2");
@@ -85,24 +95,37 @@ function displayQuestion(index) {
     var correct = content.answers[index];
     button.addEventListener('click', () => {
       checkCorrectAnswer(chosen, correct);
+      return;
     })});
 };
-
-displayQuestion(0);
 
 // function checkCorrectAnswer 
     // if clicked === right answer return true
     // default return false
 function checkCorrectAnswer(userAnswer, correctAnswer) {
+  if (main.children[2] !== undefined) {
+    main.removeChild(main.children[2]);
+  }
   var message = document.createElement("p");
   if (userAnswer === correctAnswer) {
     message.textContent = "Correct!";
     message.classList.add("result");
+    moveOn();
   } else {
     message.textContent = "Incorrect!";
     message.classList.add("result");
+    moveOn();
   }
   main.appendChild(message);
+}
+
+function moveOn() {
+  questionNumber++;
+  if (questionNumber > 4) {
+    console.log("done");
+    return;
+  }
+  displayQuestion(questionNumber);
 }
 
 // function endGame
@@ -113,3 +136,5 @@ function checkCorrectAnswer(userAnswer, correctAnswer) {
     // use local storage to update array
 
 // function displayScores
+
+start.addEventListener('click', startGame);
