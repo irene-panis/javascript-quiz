@@ -30,9 +30,23 @@ var content = {
     // players should be objects w/ name and score properties
 var players = [];
 
+var timeDisplay = document.getElementById("count");
+
 // function startGame
     
 // function startTimer
+function startTimer() {
+  var count = 10;
+
+  var timerInterval = setInterval(function() {
+    timeDisplay.textContent = count;
+    count--;
+
+    if (count < 0) {
+      clearInterval(timerInterval);
+    }
+  }, 1000);
+}
 
 // function displayQuestion
     // changes html and displays content.question and content.options
