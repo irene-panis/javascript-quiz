@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #292929;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 2% 25%;
+  font-size: 200%;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2.5%;
+}
+
+main {
+  text-align: center;
+}
+
+main > h1,
+main > p,
+main > button {
+  margin: 2.5% 0;
+}
+
+#start-btn {
+  padding: 10px 20px;
+  font-size: 100%;
+  border: none;
+  border-radius: 15px;
+}
+
