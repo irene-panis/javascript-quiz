@@ -36,6 +36,7 @@ var main = document.querySelector("main");
 var start = document.querySelector("#start-btn");
 
 var questionNumber;
+var timerInterval;
 
 // function startGame
 function startGame() {
@@ -48,14 +49,20 @@ function startGame() {
 // function startTimer
 function startTimer() {
 
-  var timerInterval = setInterval(function() {
+  timerInterval = setInterval(function() {
     timeDisplay.textContent = count;
     count--;
 
-    if (count < 0) {
+    if (count <= 0) {
       clearInterval(timerInterval);
+      endGame();
     }
   }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  endGame();
 }
 
 // function displayQuestion
@@ -64,7 +71,6 @@ function startTimer() {
     // if isCorrectAnswer append "Correct!" then return
     // if !isCorrectAnswer -15 timer append "Wrong!" then return
 function displayQuestion(index) {
-  console.log(index);
   main.innerHTML = '';
 
   var question = document.createElement("h2");
@@ -114,25 +120,40 @@ function checkCorrectAnswer(userAnswer, correctAnswer) {
   } else {
     message.textContent = "Incorrect!";
     message.classList.add("result");
+    count -= 15;
+    timeDisplay.textContent = count;
+    if (count < 0) {
+      count = 0;
+      timeDisplay.textContent = count;
+      endGame();
+      return;
+    }
     moveOn();
   }
   main.appendChild(message);
+  setTimeout(() => {
+    main.removeChild(message);
+  }, 3000);
 }
 
 function moveOn() {
   questionNumber++;
   if (questionNumber > 4) {
-    console.log("done");
+    stopTimer();
     return;
   }
   displayQuestion(questionNumber);
 }
 
 function endGame() {
-  main.innerHTML = "";
+  main.innerHTML = '';
 
   var message = document.createElement("h3");
   message.textContent = "Thanks for taking the quiz!";
+
+  var score = document.createElement("p");
+  count = timeDisplay.textContent;
+  score.textContent = `Your final score is ${count}.`;
   
   var form = document.createElement("form");
   var name = document.createElement("span");
@@ -146,6 +167,7 @@ function endGame() {
   form.appendChild(textbox);
   form.appendChild(submit);
   main.appendChild(message);
+  main.appendChild(score);
   main.appendChild(form);
 }
 
@@ -155,4 +177,4 @@ function endGame() {
 
 // function displayScores
 
-endGame();
+start.addEventListener('click', startGame);
