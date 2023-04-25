@@ -128,8 +128,26 @@ function moveOn() {
   displayQuestion(questionNumber);
 }
 
-// function endGame
-    // displays end screen
+function endGame() {
+  main.innerHTML = "";
+
+  var message = document.createElement("h3");
+  message.textContent = "Thanks for taking the quiz!";
+  
+  var form = document.createElement("form");
+  var name = document.createElement("span");
+  name.textContent = "Name: ";
+  var textbox = document.createElement("INPUT");
+  textbox.setAttribute("type", "text");
+  var submit = document.createElement("INPUT");
+  submit.setAttribute("type", "submit");
+
+  form.appendChild(name);
+  form.appendChild(textbox);
+  form.appendChild(submit);
+  main.appendChild(message);
+  main.appendChild(form);
+}
 
 // function savePlayer
     // create object then save object to array
@@ -137,4 +155,4 @@ function moveOn() {
 
 // function displayScores
 
-start.addEventListener('click', startGame);
+endGame();
