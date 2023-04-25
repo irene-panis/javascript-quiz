@@ -34,3 +34,26 @@ main > button {
   border-radius: 15px;
 }
 
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2.5%;
+}
+
+.choices > button {
+  padding: 10px 20px;
+  font-size: 100%;
+  border: none;
+  border-radius: 15px;
+  background-color: #6c499b;
+  color: white;
+  transition: 0.5s;
+}
+
+.choices > button:hover {
+  background-color: #a671eb;
+  transform: scale(1.05);
+  transition: 0.5s;
+}
+
