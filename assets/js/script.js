@@ -31,12 +31,13 @@ var content = {
 var players = [];
 
 var timeDisplay = document.getElementById("count");
+var main = document.querySelector("main");
 
 // function startGame
     
 // function startTimer
 function startTimer() {
-  var count = 10;
+  var count = 60;
 
   var timerInterval = setInterval(function() {
     timeDisplay.textContent = count;
@@ -53,10 +54,43 @@ function startTimer() {
     // addEventListener to buttons
     // if isCorrectAnswer append "Correct!" then return
     // if !isCorrectAnswer -15 timer append "Wrong!" then return
+function displayQuestion(index) {
+  main.innerHTML = '';
 
-// function isCorrectAnswer 
+  var question = document.createElement("h2");
+  question.textContent = content.questions[index];
+
+  var listOfChoices = document.createElement("div");
+  listOfChoices.classList.add("choices");
+  var choice1 = document.createElement("button");
+  var choice2 = document.createElement("button");
+  var choice3 = document.createElement("button");
+  var choice4 = document.createElement("button");
+
+  choice1.textContent = content.options[index][0];
+  choice2.textContent = content.options[index][1];
+  choice3.textContent = content.options[index][2];
+  choice4.textContent = content.options[index][3];
+
+  main.appendChild(question);
+  main.appendChild(listOfChoices);
+  listOfChoices.appendChild(choice1);
+  listOfChoices.appendChild(choice2);
+  listOfChoices.appendChild(choice3);
+  listOfChoices.appendChild(choice4);
+}
+
+main.addEventListener('click', function(event) {
+  var parentElement = event.target.parentElement;
+  if (parentElement.classList.contains("choices")) {
+    checkCorrectAnswer();
+  }
+});
+
+// function checkCorrectAnswer 
     // if clicked === right answer return true
     // default return false
+
 
 // function endGame
     // displays end screen
