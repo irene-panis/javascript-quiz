@@ -34,6 +34,7 @@ var count = 60;
 var timeDisplay = document.getElementById("count");
 var main = document.querySelector("main");
 var start = document.querySelector("#start-btn");
+var leaderboard = document.querySelector('#highscores-link');
 
 var questionNumber;
 var timerInterval;
@@ -167,7 +168,6 @@ function endGame() {
 
   form.addEventListener('submit', function(event) {
     event.preventDefault();
-    console.log(players);
     savePlayer(textbox.value, count);
     displayScores();
   });
@@ -197,6 +197,7 @@ function displayScores() {
   message.textContent = "High Scores";
 
   var list = document.createElement("ol");
+  list.classList.add('leaderboard');
 
   var highscores = JSON.parse(localStorage.getItem("players"));
 
@@ -206,13 +207,40 @@ function displayScores() {
     list.appendChild(entry);
   }
 
+  var back = document.createElement("button");
+  back.textContent = "Play again";
+  back.classList.add('endscreen-btn')
+  back.addEventListener('click', function() {
+    count = 60;
+    startGame();
+  });
+
+  var clear = document.createElement("button");
+  clear.textContent = "Clear scores";
+  clear.classList.add('endscreen-btn')
+  clear.addEventListener('click', function() {
+    list.innerHTML = '';
+    players = [];
+    localStorage.setItem("players", players);
+  });
+
   main.appendChild(message);
   main.appendChild(list);
+  main.appendChild(back);
+  main.appendChild(clear);
 }
 
 function init() {
   players = JSON.parse(localStorage.getItem("players"));
+  if (players === null) {
+    players = [];
+  }
 }
 
+leaderboard.addEventListener('click', function() {
+  clearInterval(timerInterval);
+  timeDisplay.textContent = '';
+  displayScores();
+});
 start.addEventListener('click', startGame);
 init();
