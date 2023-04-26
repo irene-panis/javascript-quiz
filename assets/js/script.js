@@ -225,7 +225,10 @@ function endGame() {
 }
 
 function init() {
-  players = JSON.parse(localStorage.getItem("players"));
+  players = JSON.parse(localStorage.getItem("players")); // tries to get players from local storage
+  if (players === null) { // if theres nothing in local storage just set players to empty array
+    players = [];
+  }
 }
 
 leaderboard.addEventListener('click', function() {
