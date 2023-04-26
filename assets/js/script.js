@@ -1,7 +1,4 @@
-// object content
-  // question: (array of questions)
-  // options: (array of arrays of options)
-  // answers: (array of correct answers)
+// any one index of a property corresponds to same index in other properties
 var content = {
   questions: [
     'What is the purpose of the "this" keyword in JavaScript?',
@@ -69,8 +66,8 @@ function stopTimer() {
 // function displayQuestion
     // changes html and displays content.question and content.options
     // addEventListener to buttons
-    // if isCorrectAnswer append "Correct!" then return
-    // if !isCorrectAnswer -15 timer append "Wrong!" then return
+    // if isCorrectAnswer turn current button green then return
+    // if !isCorrectAnswer turn current button red then return
 function displayQuestion(index) {
   main.innerHTML = '';
 
@@ -97,48 +94,102 @@ function displayQuestion(index) {
   listOfChoices.appendChild(choice4);
 
   var buttons = main.querySelectorAll(".choices > button");
-  buttons.forEach((button) => {
-    var chosen = button.textContent;
+  buttons.forEach((button) => { // add event listener to all options
+    var chosen = button.textContent; // variables containing user answer and corrrect answer for later comparison
     var correct = content.answers[index];
     button.addEventListener('click', () => {
       var result = checkCorrectAnswer(chosen, correct);
       if (result === 1) {
-        button.classList.add('correct');
+        button.classList.add('correct'); // makes button green
       } else {
-        button.classList.add('incorrect');
+        button.classList.add('incorrect'); // makes button red
       }
       return;
     })});
 };
 
 // function checkCorrectAnswer 
-    // if clicked === right answer return true
-    // default return false
-function checkCorrectAnswer(userAnswer, correctAnswer) {
-  if (userAnswer === correctAnswer) {
-    setTimeout(moveOn, 1000);
-    return 1;
-  } else {
-    count -= 15;
-    timeDisplay.textContent = count;
-    if (count < 0) {
-      count = 0;
-      timeDisplay.textContent = count;
-      setTimeout(endGame, 1000);
-      return 0;
+    // if userAnswer === correctAnswer move on
+    // if userAnswer !== correctAnswer -15 on clock then move on
+    function checkCorrectAnswer(userAnswer, correctAnswer) {
+      if (userAnswer === correctAnswer) {
+        setTimeout(moveOn, 1000); // setTimeout to allow for color change animation to play
+        return 1; // return 1 if correct
+      } else {
+        count -= 15;
+        timeDisplay.textContent = count; // updates display immediately because interval func waits until next second to update count
+        if (count < 0) { // if answer is incorrect and subtracting 15 brings score below 0, set score to 0 and end game
+          count = 0;
+          timeDisplay.textContent = count;
+          setTimeout(endGame, 1000);
+          return 0; // return 0 if incorrect
+        }
+        setTimeout(moveOn, 1000);
+        return 0; // return 0 if incorrect
+      }
     }
-    setTimeout(moveOn, 1000);
-    return 0;
-  }
-}
 
 function moveOn() {
   questionNumber++;
-  if (questionNumber > 4) {
+  if (questionNumber > 4) { // if we run out of questions stop game
     stopTimer();
     return;
   }
   displayQuestion(questionNumber);
+}
+
+function savePlayer(name, score) {
+  var player = {
+    name: name,
+    score: score
+  }
+
+  players.push(player); // add player obj to our running list of players
+  players.sort(function(a, b) { // sort players in array from highest to lowest scores
+    return b.score - a.score;
+  });
+  localStorage.setItem("players", JSON.stringify(players)); // store updated array in local
+}
+
+function displayScores() {
+  main.innerHTML = '';
+
+  var message = document.createElement("h3");
+  message.textContent = "High Scores";
+
+  var list = document.createElement("ol");
+  list.classList.add('leaderboard');
+
+  if (players !== null) { // if players array isn't empty list players on page
+    var highscores = JSON.parse(localStorage.getItem("players"));
+
+    for (let i = 0; i < highscores.length; i++) {
+      var entry = document.createElement("li");
+      entry.textContent = `${highscores[i].name} - ${highscores[i].score}`;
+      list.appendChild(entry);
+    }
+  }
+
+  var mainMenu = document.createElement("button");
+  mainMenu.textContent = "Main menu";
+  mainMenu.classList.add('endscreen-btn')
+  mainMenu.addEventListener('click', function() {
+    count = 60; 
+    location.href = "";
+  });
+
+  var back = document.createElement("button");
+  back.textContent = "Play again";
+  back.classList.add('endscreen-btn')
+  back.addEventListener('click', function() {
+    count = 60; // reset count to 60 to allow user to play again
+    startGame();
+  });
+
+  main.appendChild(message);
+  main.appendChild(list);
+  main.appendChild(mainMenu);
+  main.appendChild(back);
 }
 
 function endGame() {
@@ -173,68 +224,8 @@ function endGame() {
   });
 }
 
-// function savePlayer
-    // create object then save object to array
-    // use local storage to update array
-function savePlayer(name, score) {
-  var player = {
-    name: name,
-    score: score
-  }
-
-  players.push(player);
-  players.sort(function(a, b) {
-    return b.score - a.score;
-  });
-  localStorage.setItem("players", JSON.stringify(players));
-}
-
-// function displayScores
-function displayScores() {
-  main.innerHTML = '';
-
-  var message = document.createElement("h3");
-  message.textContent = "High Scores";
-
-  var list = document.createElement("ol");
-  list.classList.add('leaderboard');
-
-  var highscores = JSON.parse(localStorage.getItem("players"));
-
-  for (let i = 0; i < highscores.length; i++) {
-    var entry = document.createElement("li");
-    entry.textContent = `${highscores[i].name} - ${highscores[i].score}`;
-    list.appendChild(entry);
-  }
-
-  var back = document.createElement("button");
-  back.textContent = "Play again";
-  back.classList.add('endscreen-btn')
-  back.addEventListener('click', function() {
-    count = 60;
-    startGame();
-  });
-
-  var clear = document.createElement("button");
-  clear.textContent = "Clear scores";
-  clear.classList.add('endscreen-btn')
-  clear.addEventListener('click', function() {
-    list.innerHTML = '';
-    players = [];
-    localStorage.setItem("players", players);
-  });
-
-  main.appendChild(message);
-  main.appendChild(list);
-  main.appendChild(back);
-  main.appendChild(clear);
-}
-
 function init() {
   players = JSON.parse(localStorage.getItem("players"));
-  if (players === null) {
-    players = [];
-  }
 }
 
 leaderboard.addEventListener('click', function() {
@@ -242,5 +233,7 @@ leaderboard.addEventListener('click', function() {
   timeDisplay.textContent = '';
   displayScores();
 });
+
 start.addEventListener('click', startGame);
+
 init();
