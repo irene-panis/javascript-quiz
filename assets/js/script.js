@@ -111,23 +111,23 @@ function displayQuestion(index) {
 // function checkCorrectAnswer 
     // if userAnswer === correctAnswer move on
     // if userAnswer !== correctAnswer -15 on clock then move on
-    function checkCorrectAnswer(userAnswer, correctAnswer) {
-      if (userAnswer === correctAnswer) {
-        setTimeout(moveOn, 1000); // setTimeout to allow for color change animation to play
-        return 1; // return 1 if correct
-      } else {
-        count -= 15;
-        timeDisplay.textContent = count; // updates display immediately because interval func waits until next second to update count
-        if (count < 0) { // if answer is incorrect and subtracting 15 brings score below 0, set score to 0 and end game
-          count = 0;
-          timeDisplay.textContent = count;
-          setTimeout(endGame, 1000);
-          return 0; // return 0 if incorrect
-        }
-        setTimeout(moveOn, 1000);
-        return 0; // return 0 if incorrect
-      }
+function checkCorrectAnswer(userAnswer, correctAnswer) {
+  if (userAnswer === correctAnswer) {
+    setTimeout(moveOn, 1000); // setTimeout to allow for color change animation to play
+    return 1; // return 1 if correct
+  } else {
+    count -= 15;
+    timeDisplay.textContent = count; // updates display immediately because interval func waits until next second to update count
+    if (count < 0) { // if answer is incorrect and subtracting 15 brings score below 0, set score to 0 and end game
+      count = 0;
+      timeDisplay.textContent = count;
+      setTimeout(endGame, 1000);
+      return 0; // return 0 if incorrect
     }
+    setTimeout(moveOn, 1000);
+    return 0; // return 0 if incorrect
+  }
+}
 
 function moveOn() {
   questionNumber++;
@@ -161,6 +161,7 @@ function displayScores() {
   list.classList.add('leaderboard');
 
   var highscores = JSON.parse(localStorage.getItem("players"));
+  // if-statement just in case users try to access leaderboard with no local storage
   if (highscores !== null) { // if highscores array isn't empty list players on page
     for (let i = 0; i < highscores.length; i++) {
       var entry = document.createElement("li");
