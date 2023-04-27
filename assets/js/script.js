@@ -160,9 +160,8 @@ function displayScores() {
   var list = document.createElement("ol");
   list.classList.add('leaderboard');
 
-  if (players !== null) { // if players array isn't empty list players on page
-    var highscores = JSON.parse(localStorage.getItem("players"));
-
+  var highscores = JSON.parse(localStorage.getItem("players"));
+  if (highscores !== null) { // if highscores array isn't empty list players on page
     for (let i = 0; i < highscores.length; i++) {
       var entry = document.createElement("li");
       entry.textContent = `${highscores[i].name} - ${highscores[i].score}`;
